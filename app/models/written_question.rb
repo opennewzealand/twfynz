@@ -1,4 +1,23 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: written_questions
+#
+#  id              :integer          not null, primary key
+#  question        :text
+#  answer          :text
+#  status          :string(255)
+#  question_number :integer
+#  question_year   :integer
+#  asker_id        :integer
+#  portfolio_id    :integer
+#  respondent_id   :integer
+#  date_asked      :date
+#  days_late       :integer
+#  subject         :string(255)
+#  portfolio_name  :string(255)
+#
+
 class WrittenQuestion < ActiveRecord::Base
   belongs_to :asker, :class_name => "Mp"
   belongs_to :portfolio

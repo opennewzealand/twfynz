@@ -1,4 +1,21 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: users
+#
+#  id              :integer          not null, primary key
+#  type            :string(255)
+#  login           :string(255)
+#  hashed_password :string(255)
+#  email           :string(255)
+#  salt            :string(255)
+#  blog_url        :string(255)
+#  site_url        :string(255)
+#  email_confirmed :boolean
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 require 'digest/sha1'
 require 'rubygems'
 
@@ -17,7 +34,7 @@ class User < ActiveRecord::Base
       :if => Proc.new { |u| !u.email.blank? },
       :message => "format is invalid"
 
-  validates_format_of :login, :with => /^([a-z]+)(_[a-z]+)*$/,
+  validates_format_of :login, :with => /^([a-z0-9]+)(_[a-z]0-9+)*$/,
       :if => Proc.new { |u| !u.login.blank? },
       :message => "format is invalid, try lower case letters, with _ in between words"
 

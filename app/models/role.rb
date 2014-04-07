@@ -1,4 +1,15 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: roles
+#
+#  id         :integer          not null, primary key
+#  mp_id      :integer          not null
+#  start_date :date
+#  end_date   :date
+#  title      :string(255)
+#
+
 
 class Role < ActiveRecord::Base
   belongs_to :mp

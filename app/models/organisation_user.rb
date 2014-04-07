@@ -1,4 +1,21 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: users
+#
+#  id              :integer          not null, primary key
+#  type            :string(255)
+#  login           :string(255)
+#  hashed_password :string(255)
+#  email           :string(255)
+#  salt            :string(255)
+#  blog_url        :string(255)
+#  site_url        :string(255)
+#  email_confirmed :boolean
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 require 'digest/sha1'
 
 class OrganisationUser < User

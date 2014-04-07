@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 def answers_from_question_time_alert
   receiving_address = 'receiving_address.co.nz'
@@ -153,7 +153,7 @@ describe ParliamentAlertReceiver do
       @name = %Q|Provisional Order Paper for Tuesday, 22 July 2008|
       @url = %Q|http://www.parliament.nz/en-NZ/?document=00HOHOrderPaper1|
       @raw_email = order_paper_alert @name, @alert_date, @url
-      @alert = mock('alert')
+      @alert = double 'alert'
     end
 
     it 'should send twitter update' do
@@ -164,7 +164,7 @@ describe ParliamentAlertReceiver do
 
     describe "on creation of new order paper alert" do
       before do
-        @alert.stub!(:tweet_alert)
+        @alert.stub(:tweet_alert)
       end
       it 'should set name correctly' do
         OrderPaperAlert.should_receive(:new).with(hash_including(:name=>@name)).and_return @alert

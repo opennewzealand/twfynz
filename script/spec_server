@@ -48,14 +48,14 @@ module Spec
     end
   end
 end
-puts "Loading Rails environment"
+# puts "Loading Rails environment"
 
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'dispatcher'
 
 def restart_test_server
-  puts "restarting"
+  # puts "restarting"
   config       = ::Config::CONFIG
   ruby         = File::join(config['bindir'], config['ruby_install_name']) + config['EXEEXT']
   command_line = [ruby, $0, ARGV].flatten.join(' ')
@@ -77,8 +77,8 @@ def daemonize(pid_file = nil)
     }
     yield
   }
-  puts "spec_server launched. (PID: %d)" % pid
-  File.open(pid_file,"w"){|f| f.puts pid } if pid_file
+  # puts "spec_server launched. (PID: %d)" % pid
+  File.open(pid_file,"w"){|f| f.# puts pid } if pid_file
   exit! 0
 end
 
@@ -88,7 +88,7 @@ opts.on("-d", "--daemon"){|v| options[:daemon] = true }
 opts.on("-p", "--pid PIDFILE"){|v| options[:pid] = v }
 opts.parse!(ARGV)
 
-puts "Ready"
+# puts "Ready"
 exec_server = lambda {
   trap("USR2") { restart_test_server } if Signal.list.has_key?("USR2")
   DRb.start_service("druby://localhost:8989", Spec::Runner::RailsSpecServer.new)

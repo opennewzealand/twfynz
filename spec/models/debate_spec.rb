@@ -1,4 +1,30 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: debates
+#
+#  id                 :integer          not null, primary key
+#  date               :date             not null
+#  debate_index       :integer          not null
+#  publication_status :string(1)        not null
+#  source_url         :string(255)
+#  type               :string(255)      not null
+#  hansard_volume     :integer
+#  start_page         :integer
+#  name               :string(255)      not null
+#  css_class          :string(255)      not null
+#  debate_id          :integer
+#  about_type         :string(255)
+#  about_id           :integer
+#  about_index        :integer
+#  answer_from_type   :string(255)
+#  answer_from_id     :integer
+#  oral_answer_no     :integer
+#  re_oral_answer_no  :integer
+#  url_slug           :string(255)
+#  url_category       :string(255)
+#
+
+require 'spec_helper'
 
 def dummy_bill_params
   {:bill_name => 'Major Events Management Bill',
@@ -87,7 +113,7 @@ describe Debate, 'when finding by category and slug' do
     url_slug = 'australia'
     year = '2008'; month = 'apr'; day = '17'
     yyyy_mm_dd = "#{year}-04-#{day}"
-    date = mock(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true, :yyyy_mm_dd => yyyy_mm_dd)
+    date = double(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true, :yyyy_mm_dd => yyyy_mm_dd)
     debate = mock_model(SubDebate)
     debates = [debate]
     Debate.should_receive(:find_all_by_date_and_url_category_and_url_slug).with(yyyy_mm_dd, category, url_slug).and_return debates
@@ -101,7 +127,7 @@ describe Debate, 'when finding by category and slug' do
     url_slug = 'voting'
     year = '2008'; month = 'apr'; day = '17'
     yyyy_mm_dd = "#{year}-04-#{day}"
-    date = mock(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true, :yyyy_mm_dd => yyyy_mm_dd)
+    date = double(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true, :yyyy_mm_dd => yyyy_mm_dd)
     debate = mock_model(SubDebate)
     debates = [debate]
     Debate.should_receive(:find_all_by_date_and_url_slug).with(yyyy_mm_dd, url_slug).and_return debates
@@ -113,9 +139,9 @@ end
 
 describe Debate, 'when finding by date and index' do
   it 'should return subdebate if index is pointing to parent debate with one subdebate' do
-    date = mock('date', :year=>'year',:month=>'month',:day=>'day')
-    index = mock('index')
-    sub_debate = mock('sub_debate')
+    date = double('date', :year=>'year',:month=>'month',:day=>'day')
+    index = double('index')
+    sub_debate = double('sub_debate')
     parent_debate = mock_model(ParentDebate, :is_parent_with_one_sub_debate? => true, :sub_debate => sub_debate)
     Debate.should_receive(:find_by_index).with('year','month','day',index).and_return parent_debate
     Debate.find_by_date_and_index(date, index).should == sub_debate
@@ -124,9 +150,9 @@ end
 
 describe Debate, 'when finding on date by category' do
   it 'should return subdebate if index is pointing to parent debate with one subdebate' do
-    date = mock('date', :year=>'year',:month=>'month',:day=>'day')
-    index = mock('index')
-    sub_debate = mock('sub_debate')
+    date = double('date', :year=>'year',:month=>'month',:day=>'day')
+    index = double('index')
+    sub_debate = double('sub_debate')
     parent_debate = mock_model(ParentDebate, :is_parent_with_one_sub_debate? => true, :sub_debate => sub_debate)
     Debate.should_receive(:find_by_index).with('year','month','day',index).and_return parent_debate
     Debate.find_by_date_and_index(date, index).should == sub_debate
@@ -141,13 +167,13 @@ describe Debate, 'in general' do
 
   it "should return contribution_id when contribution is in debate's contributions" do
     debate = Debate.new
-    contribution = mock('contribution')
+    contribution = double('contribution')
     debate.should_receive(:contribution_index).with(contribution).and_return 1
     debate.contribution_id(contribution).should == '2'
   end
 
   it "should return contribution_id when contribution is in a sub_debate's contributions" do
-    contribution = mock('contribution')
+    contribution = double('contribution')
     sub_debate = Debate.new
     sub_debate.should_receive(:contribution_index).with(contribution).and_return 2
 

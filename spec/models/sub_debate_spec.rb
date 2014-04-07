@@ -1,10 +1,36 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: debates
+#
+#  id                 :integer          not null, primary key
+#  date               :date             not null
+#  debate_index       :integer          not null
+#  publication_status :string(1)        not null
+#  source_url         :string(255)
+#  type               :string(255)      not null
+#  hansard_volume     :integer
+#  start_page         :integer
+#  name               :string(255)      not null
+#  css_class          :string(255)      not null
+#  debate_id          :integer
+#  about_type         :string(255)
+#  about_id           :integer
+#  about_index        :integer
+#  answer_from_type   :string(255)
+#  answer_from_id     :integer
+#  oral_answer_no     :integer
+#  re_oral_answer_no  :integer
+#  url_slug           :string(255)
+#  url_category       :string(255)
+#
+
+require 'spec_helper'
 
 describe SubDebate do
   describe 'in general' do
     it 'should return parent name' do
       debate = SubDebate.new
-      parent = mock('parent',:name=>'name')
+      parent = double('parent',:name=>'name')
       debate.should_receive(:parent).twice.and_return parent
       debate.parent_name.should == 'name'
     end
@@ -14,18 +40,18 @@ describe SubDebate do
     describe 'and is about bill' do
       it 'should return bill' do
         subdebate = SubDebate.new
-        bill = mock('government_bill')
+        bill = double('government_bill')
         bill.should_receive(:is_a?).with(Bill).and_return true
-        subdebate.stub!(:about).and_return bill
+        subdebate.stub(:about).and_return bill
         subdebate.bill.should == bill
       end
     end
     describe 'and is not about bill' do
       it 'should return nil' do
         subdebate = SubDebate.new
-        portfolio = mock('portfolio')
+        portfolio = double('portfolio')
         portfolio.should_receive(:is_a?).with(Bill).and_return false
-        subdebate.stub!(:about).and_return portfolio
+        subdebate.stub(:about).and_return portfolio
         subdebate.bill.should be_nil
       end
     end
@@ -45,13 +71,13 @@ describe SubDebate do
     end
 
     it 'should handle other text as usual' do
-      assert_slug_correct 'Third Reading', 'third_reading'
+      assert_slug_correct 'Third Reading', 'third-reading'
     end
 
     def assert_slug_correct name, expected
       debate = SubDebate.new(:name => name, :date => '2008-04-01', :publication_status => 'U')
-      debate.stub!(:about).and_return mock_model(Bill)
-      debate.stub!(:make_url_category_text).and_return ''
+      debate.stub(:about).and_return mock_model(Bill)
+      debate.stub(:make_url_category_text).and_return ''
       debate.create_url_slug
       debate.url_slug.should == expected
     end
@@ -61,15 +87,15 @@ describe SubDebate do
   describe "creating url slug for non-bill subdebate" do
     def assert_slug_correct parent_name, name, category_or_slug, slug=nil
       debate = SubDebate.new(:name => name, :date => '2008-04-01', :publication_status => 'U')
-      debate.stub!(:about).and_return nil
-      debate.stub!(:parent).and_return mock_model(ParentDebate, :name => parent_name)
+      debate.stub(:about).and_return nil
+      debate.stub(:parent).and_return mock_model(ParentDebate, :name => parent_name)
       debate.create_url_slug
       debate.url_category.should == category_or_slug if slug
       debate.url_slug.should == (slug ? slug : category_or_slug)
     end
 
     it 'should create url_category and url_slug' do
-      assert_slug_correct 'Points of Order', 'Mispronunciation—Māori Language and Members’ Names', 'points_of_order', 'mispronunciation'              # http://theyworkforyou.co.nz/debates/2008/apr/09/02
+      assert_slug_correct 'Points of Order', 'Mispronunciation—Māori Language and Members’ Names', 'points-of-order', 'mispronunciation'              # http://theyworkforyou.co.nz/debates/2008/apr/09/02
       assert_slug_correct 'Visitors', "Australia—Attorney-General", 'visitors', 'australia'
       assert_slug_correct 'Urgent Debates Declined', 'Auckland International Airport—Canada Pension Plan Investment Board Bid', 'urgent_debates_declined', 'auckland_international_airport'  # http://theyworkforyou.co.nz/debates/2008/apr/15/20
       assert_slug_correct 'Tabling of Documents', 'Driving Incident', 'tabling_of_documents', 'driving_incident'                                      # http://theyworkforyou.co.nz/debates/2008/apr/02/23
@@ -94,11 +120,11 @@ describe SubDebate do
     end
 
     it 'should abbreviate New Zealand to nz, and " - " to "_"' do
-      assert_slug_correct 'Australia - New Zealand Political Exchange—Members', 'Australia—Standing Committee on Economics, Finance and Public Administration', 'australia_nz_political_exchange'
+      assert_slug_correct 'Australia - New Zealand Political Exchange—Members', 'Australia—Standing Committee on Economics, Finance and Public Administration', 'australia-nz-political_exchange'
     end
 
     it 'only use name up to "—"' do
-      assert_slug_correct 'Conduct in the House—Standards', 'Motion of No Confidence—Leave to Move', 'conduct_in_the_house'
+      assert_slug_correct 'Conduct in the House—Standards', 'Motion of No Confidence—Leave to Move', 'conduct-in-the-house'
     end
   end
 end

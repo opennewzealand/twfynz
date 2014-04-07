@@ -1,13 +1,26 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: votes
+#
+#  id                :integer          not null, primary key
+#  type              :string(12)
+#  vote_question     :text
+#  vote_result       :text
+#  ayes_tally        :integer
+#  noes_tally        :integer
+#  abstentions_tally :integer
+#
+
+require 'spec_helper'
 
 describe Vote do
 
   describe 'when asked for bill' do
     it 'should look ask contribution for bill' do
-      bill = mock('bill')
-      contribution = mock('contribution', :bill => bill)
+      bill = double('bill')
+      contribution = double('contribution', :bill => bill)
       vote = Vote.new
-      vote.stub!(:contribution).and_return contribution
+      vote.stub(:contribution).and_return contribution
       vote.bill.should == bill
     end
   end

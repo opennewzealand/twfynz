@@ -1,4 +1,30 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: debates
+#
+#  id                 :integer          not null, primary key
+#  date               :date             not null
+#  debate_index       :integer          not null
+#  publication_status :string(1)        not null
+#  source_url         :string(255)
+#  type               :string(255)      not null
+#  hansard_volume     :integer
+#  start_page         :integer
+#  name               :string(255)      not null
+#  css_class          :string(255)      not null
+#  debate_id          :integer
+#  about_type         :string(255)
+#  about_id           :integer
+#  about_index        :integer
+#  answer_from_type   :string(255)
+#  answer_from_id     :integer
+#  oral_answer_no     :integer
+#  re_oral_answer_no  :integer
+#  url_slug           :string(255)
+#  url_category       :string(255)
+#
+
+require 'spec_helper'
 
 describe DebateAlone do
 
@@ -13,9 +39,9 @@ describe DebateAlone do
     describe 'and is not about bill' do
       it 'should return nil' do
         debate = DebateAlone.new
-        bill = mock('bill')
-        topic1 = mock('debatetopic1', :formerly_part_of_bill => bill)
-        topic2 = mock('debatetopic2', :formerly_part_of_bill => bill)
+        bill = double 'bill'
+        topic1 = double 'debatetopic1', :formerly_part_of_bill => bill
+        topic2 = double 'debatetopic2', :formerly_part_of_bill => bill
         debate.should_receive(:debate_topics).and_return [topic1, topic2]
         debate.bill.should == bill
       end
@@ -47,15 +73,15 @@ describe DebateAlone do
     end
 
     it 'should set category for variants of frequent debate names' do
-      assert_category_correct 'Member Sworn', 'members_sworn'
+      assert_category_correct 'Member Sworn', 'members-sworn'
     end
 
     it 'should set category and slug for frequent debate names' do
-      assert_slug_correct 'Standing Orders—Sessional',  'standing_orders', 'sessional'
-      assert_slug_correct 'Standing Orders—Suspension', 'standing_orders', 'suspension'
-      assert_slug_correct 'Members’ Bills — Procedure', 'members_bills', 'procedure'
-      assert_slug_correct 'Offices of Parliament—Address to Governor-General', 'offices_of_parliament', 'address_to_governor-general'
-      assert_slug_correct 'Address in Reply—Presentation to Governor-General', 'address_in_reply', 'presentation_to_governor-general'
+      assert_slug_correct 'Standing Orders—Sessional',  'standing-orders', 'sessional'
+      assert_slug_correct 'Standing Orders—Suspension', 'standing-orders', 'suspension'
+      assert_slug_correct 'Members’ Bills — Procedure', 'members-bills', 'procedure'
+      assert_slug_correct 'Offices of Parliament—Address to Governor-General', 'offices-of-parliament', 'address-to-governor-general'
+      assert_slug_correct 'Address in Reply—Presentation to Governor-General', 'address-in-reply', 'presentation-to-governor-general'
     end
 
     it 'should set category and slug for variants of frequent debate names' do
@@ -64,11 +90,11 @@ describe DebateAlone do
     end
 
     it 'should set slug to part_1 and part_2 if there are two parts to a debate with same category' do
-      assert_category_correct 'General Debate',        'general_debate'
+      assert_category_correct 'General Debate',        'general-debate'
     end
 
     it 'should not set category for other frequent debate names' do
-      assert_slug_correct 'Third Readings', 'third_readings'
+      assert_slug_correct 'Third Readings', 'third-readings'
       assert_slug_correct 'Urgency', 'urgency'
     end
 

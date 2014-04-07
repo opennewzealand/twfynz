@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe WrittenQuestionsController, "routes" do
   it "should map { :controller => 'written_questions', :action => 'index' } to /written_questions" do
@@ -13,7 +13,7 @@ end
 describe WrittenQuestionsController, "handling GET /written_questions" do
   before do
     @questions = []
-    WrittenQuestion.stub!(:find).and_return(@questions)
+    WrittenQuestion.stub(:find).and_return(@questions)
   end
 
   it "should be successful" do
@@ -35,7 +35,7 @@ end
 describe WrittenQuestionsController, "handling GET /written_questions/1" do
   before do
     @question = mock_model(Question)
-    WrittenQuestion.stub!(:find).and_return(@question)
+    WrittenQuestion.stub(:find).and_return(@question)
   end
 
   it "should be successful" do

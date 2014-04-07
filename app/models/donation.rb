@@ -1,4 +1,20 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: donations
+#
+#  id              :integer          not null, primary key
+#  party_name      :string(255)
+#  party_id        :integer
+#  donor_name      :string(255)
+#  organisation_id :integer
+#  donor_address   :string(255)
+#  amount          :integer
+#  year            :integer
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
 class Donation < ActiveRecord::Base
 
   belongs_to :party

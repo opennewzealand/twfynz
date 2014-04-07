@@ -37,7 +37,7 @@ class AddDateIntToContributions < ActiveRecord::Migration
     else
       estimated_remaining = "#{estimated_remaining} mins"
     end
-    puts "remaining: #{estimated_remaining}"
+    # puts "remaining: #{estimated_remaining}"
   end
 
 end

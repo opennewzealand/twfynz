@@ -30,7 +30,7 @@ class HansardDownloader
 
     if true
     #if suppress_git_push
-      puts 'suppressing git push'
+      # puts 'suppressing git push'
     else
       PersistedFile.set_all_indexes_on_date
       PersistedFile.git_push
@@ -40,7 +40,7 @@ class HansardDownloader
   def unload_date date, publication_status
     delete_debates date, publication_status
     records = PersistedFile.find_all_by_debate_date_and_publication_status(date, publication_status)
-    puts 'setting ' + records.size.to_s + ' persisted file records to "unpersisted"'
+    # puts 'setting ' + records.size.to_s + ' persisted file records to "unpersisted"'
     records.each {|record| record.persisted = false; record.save!}
   end
 
@@ -48,7 +48,7 @@ class HansardDownloader
     data_path = File.join(PersistedFile.data_path, date.strftime('%Y/%m/%d'))
 
     if (to_delete = get_directory_to_delete(data_path))
-      puts "redownloading: #{date}"
+      # puts "redownloading: #{date}"
       publication_status = to_delete[0..0].upcase
 
       original_directory, backup = move_original_download(data_path, to_delete, date)
@@ -60,7 +60,7 @@ class HansardDownloader
 
       warn_if_problem original_directory, date, publication_status, backup, records_size
     else
-      puts 'no directory found to redownload at: ' + data_path
+      # puts 'no directory found to redownload at: ' + data_path
     end
   end
 
@@ -69,22 +69,22 @@ class HansardDownloader
     def move_original_download data_path, to_delete, date
       original = File.join data_path, to_delete
       backup = original + '_' + Date.today.strftime('%Y_%m_%d')
-      puts 'moving ' + original + ' to ' + backup
+      # puts 'moving ' + original + ' to ' + backup
       FileUtils.move original, backup
       return original, backup
     end
 
     def delete_debates date, publication_status
       debates = Debate.find_all_by_date_and_publication_status(date, publication_status)
-      puts "found: #{debates.size} for #{date} #{publication_status}"
-      puts "destroying #{debates.size} debates" if debates
+      # puts "found: #{debates.size} for #{date} #{publication_status}"
+      # puts "destroying #{debates.size} debates" if debates
       debates.each { |debate| debate.destroy }
     end
 
     def delete_records date, publication_status
       records = PersistedFile.find_all_by_debate_date_and_publication_status(date, publication_status)
       records_size = records.size
-      puts "destroying #{records_size} persisted file records" if records
+      # puts "destroying #{records_size} persisted file records" if records
       records.each { |record| record.destroy }
       records_size
     end
@@ -97,7 +97,7 @@ class HansardDownloader
         elsif records.size != original_records_size
           raise "expected #{original_records_size} new rows to be in persisted_files, but redownloaded #{records.size}, manual fix required!"
         else
-          puts 'created ' + records.size.to_s + ' persisted file records; to load use rake kiwimp:load_hansard'
+          # puts 'created ' + records.size.to_s + ' persisted file records; to load use rake kiwimp:load_hansard'
         end
       else
         raise 'original directory has not redownloaded, backup is: ' + backup
@@ -121,7 +121,7 @@ class HansardDownloader
 
     def open_index_page page
       url = "http://www.parliament.nz/en-nz/pb/debates/debates/?Criteria.PageNumber=#{page}"
-      puts 'opening: ' + url
+      # puts 'opening: ' + url
       sleep(0.3)
       Nokogiri::HTML(open(url))
     end
@@ -133,7 +133,7 @@ class HansardDownloader
         debate = {}
         link = row.search('a')
         debate[:title] = link.inner_text
-        puts "http://www.parliament.nz" + link.attr('href').to_s
+        # puts "http://www.parliament.nz" + link.attr('href').to_s
         debate[:href] = to_url link
         debate[:date] = Date.parse(row.search('.attr').inner_text)
 
@@ -154,7 +154,7 @@ class HansardDownloader
       finished = false
       debates.each do |debate|
         unless finished || ignore_debate?(debate)
-          # puts debate.inner_text
+          # # puts debate.inner_text
           finished = download_debate(debate)
         end
       end
@@ -167,25 +167,25 @@ class HansardDownloader
 
     def ignore_old_content date
       ignore = date <= Date.new(2009,2,1)
-      # puts "ignoring older content for now #{date.to_s}" if ignore
+      # # puts "ignoring older content for now #{date.to_s}" if ignore
       ignore
     end
 
     def continue_until_we_find_date date
       continue = @download_date && (date > @download_date)
-      puts "ignoring #{date}, continuing until we find #{@download_date}" if continue
+      # puts "ignoring #{date}, continuing until we find #{@download_date}" if continue
       continue
     end
 
     def past_date_we_wanted date
       past = @download_date && (date < (@download_date - 1))
-      puts "past #{@download_date}, finished" if past
+      # puts "past #{@download_date}, finished" if past
       past
     end
 
     def past_date_we_wanted_continue_for_one_more_day date
       past = @download_date && (date == (@download_date - 1))
-      puts "past #{@download_date}, continuing for one more day" if past
+      # puts "past #{@download_date}, continuing for one more day" if past
       past
     end
 
@@ -220,7 +220,7 @@ class HansardDownloader
       finished = false
 
       if persisted_file.exists?
-        # puts "persisted_file exists #{persisted_file.inspect}"
+        # # puts "persisted_file exists #{persisted_file.inspect}"
         PersistedFile.add_if_missing persisted_file
 
       elsif @downloading_uncorrected
@@ -231,11 +231,11 @@ class HansardDownloader
         advance_exists = persisted_file.exists?
 
         # if advance_exists && (!@check_for_final || @download_date)
-        # puts 'persisted_file exists'
+        # # puts 'persisted_file exists'
         # PersistedFile.add_if_missing persisted_file
         # else
         if advance_exists
-          puts "checking status: #{persisted_file.parliament_url}"
+          # puts "checking status: #{persisted_file.parliament_url}"
           persisted_file.set_publication_status('final')
         end
         finished = download_this_debate persisted_file
@@ -260,7 +260,7 @@ class HansardDownloader
       else
         status = publication_status_from(contents)
         if status.nil?
-          puts "cannot determine status from contents: #{persisted_file.parliament_url}"
+          # puts "cannot determine status from contents: #{persisted_file.parliament_url}"
         end
 
         persisted_file.set_publication_status(status)
@@ -271,7 +271,7 @@ class HansardDownloader
           PersistedFile.add_if_missing persisted_file
 
         elsif persisted_file.others_exists_on_date?
-          puts 'need to reload day, coz of: ' + persisted_file.parliament_url
+          # puts 'need to reload day, coz of: ' + persisted_file.parliament_url
 
           redownload_date persisted_file.debate_date
         else
@@ -292,7 +292,7 @@ class HansardDownloader
 
       meta_uri = "http://www.parliament.nz" + doc.search('#BtnMetadata').attr('href')
 
-      puts "Getting status from #{meta_uri}"
+      # puts "Getting status from #{meta_uri}"
 
       sleep(0.3)
 

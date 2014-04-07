@@ -1,4 +1,22 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: submissions
+#
+#  id                   :integer          not null, primary key
+#  submitter_name       :string(255)
+#  submitter_url        :string(255)
+#  business_item_name   :string(255)
+#  committee_id         :integer
+#  date                 :date
+#  evidence_url         :string(255)
+#  business_item_type   :string(255)
+#  business_item_id     :integer
+#  is_from_organisation :boolean
+#  submitter_type       :string(255)
+#  submitter_id         :integer
+#
+
 class Submission < ActiveRecord::Base
 
   belongs_to :business_item, :polymorphic => true
@@ -42,6 +60,10 @@ class Submission < ActiveRecord::Base
     return 'no'
   end
 
+  def committee_name= committee_name
+    @committee_name = committee_name
+  end
+
   protected
 
     def expire_cached_pages
@@ -66,10 +88,6 @@ class Submission < ActiveRecord::Base
         end
       end
       populate_submitter_id
-    end
-
-    def committee_name= committee_name
-      @committee_name = committee_name
     end
 
     def populate_business_item

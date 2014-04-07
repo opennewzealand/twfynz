@@ -1,4 +1,20 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: organisations
+#
+#  id                :integer          not null, primary key
+#  name              :string(255)
+#  url               :string(255)
+#  slug              :string(255)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  wikipedia_url     :string(255)
+#  count_of_mentions :integer
+#  alternate_names   :string(255)
+#  sourcewatch_url   :string(255)
+#
+
 require 'extend_string'
 require 'rubygems'
 require 'hpricot'
@@ -185,7 +201,8 @@ class Organisation < ActiveRecord::Base
   end
 
   def grab_thumbnail
-    if (RAILS_ENV != 'test' and url and !File.exist?(thumbnail))
+    # TODO: Production code shouldn't be inspecting the Rails env
+    if (!Rails.env.test? and url and !File.exist?(thumbnail))
       uri = url.sub('www.','')
       resp = response "www.alexa.com", "/data/details/main/#{uri}"
 

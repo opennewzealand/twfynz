@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: portfolios
+#
+#  id                  :integer          not null, primary key
+#  beehive_id          :integer
+#  portfolio_name      :string(82)       not null
+#  url                 :text
+#  dpmc_id             :string(42)
+#  dpmc_responsibility :boolean
+#
+
 communications:
   dpmc_id: communications
   dpmc_responsibility: "0"

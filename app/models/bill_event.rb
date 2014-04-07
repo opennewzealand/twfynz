@@ -1,4 +1,18 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: bill_events
+#
+#  id          :integer          not null, primary key
+#  bill_id     :integer
+#  name        :string(255)
+#  date        :date
+#  source_type :string(255)
+#  source_id   :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
 class BillEvent < ActiveRecord::Base
 
   belongs_to :bill
@@ -12,14 +26,15 @@ class BillEvent < ActiveRecord::Base
   class << self
 
     def create_from_nzl_event nzl_event
+      # TODO: Remove defensive coding guarding attributes
       if nzl_event.about_type == 'Bill' && nzl_event.about_id && nzl_event.version_stage
-        returning(BillEvent.new) do |e|
-          e.bill_id     = nzl_event.about_id
-          e.name        = nzl_event.version_stage
-          e.date        = nzl_event.version_date
-          e.source_type = 'NzlEvent'
-          e.source_id   = nzl_event.id
-        end
+        BillEvent.new(
+          bill_id:      nzl_event.about_id,
+          name:         nzl_event.version_stage,
+          date:         nzl_event.version_date,
+          source_type:  'NzlEvent',
+          source_id:    nzl_event.id
+        )
       else
         nil
       end
@@ -229,7 +244,7 @@ class BillEvent < ActiveRecord::Base
   end
 
   def log_creation
-    puts "created: #{self.inspect}"
+    # puts "created: #{self.inspect}"
   end
 
   def expire_cached_pages

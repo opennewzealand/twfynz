@@ -1,4 +1,24 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: persisted_files
+#
+#  id                 :integer          not null, primary key
+#  debate_date        :date
+#  publication_status :string(1)
+#  oral_answer        :boolean
+#  downloaded         :boolean
+#  download_date      :date
+#  is_persisted       :boolean
+#  persisted_date     :date
+#  file_name          :string(255)
+#  parliament_name    :text
+#  parliament_url     :string(255)
+#  index_on_date      :integer
+#  name               :string(255)
+#  written_status     :string(10)
+#
+
 require 'fileutils'
 require 'yaml'
 
@@ -38,8 +58,8 @@ class PersistedFile < ActiveRecord::Base
     def load_written_questions_for files
       parser = WrittenQuestionParser.new
       files.each_with_index do |file, index|
-        puts "file: #{file.inspect}"
-        puts "parsing: #{file.storage_name}"
+        # puts "file: #{file.inspect}"
+        # puts "parsing: #{file.storage_name}"
         content = File.open(file.storage_name).read
         written_question = parser.parse(content)
         preexisting_question = WrittenQuestion.find_by_question_number(written_question.question_number)
@@ -54,13 +74,13 @@ class PersistedFile < ActiveRecord::Base
       end
       files.each { |f| f.do_persist! }
       date = files.first.debate_date
-      puts "persisted: #{date}"
+      # puts "persisted: #{date}"
     end
 
     def load_questions_for files
       oral_answers = nil
       files.each_with_index do |file, index|
-        puts "parsing: #{file.storage_name}"
+        # puts "parsing: #{file.storage_name}"
         parser = HansardParser.new(file.storage_name, file.parliament_url, file.debate_date)
         oral_answers = parser.parse_oral_answer(index+1, oral_answers)
       end
@@ -68,13 +88,13 @@ class PersistedFile < ActiveRecord::Base
       # if nothing found, escape
       return if oral_answers.nil?
 
-      puts "saving: #{oral_answers.class.name}"
+      # puts "saving: #{oral_answers.class.name}"
       oral_answers.save!
       files.each { |f| f.do_persist! }
       date = files.first.debate_date
-      puts "persisted: #{date}"
+      # puts "persisted: #{date}"
       oral_answers.create_url_slugs!
-      puts "created url slugs: #{date}"
+      # puts "created url slugs: #{date}"
       Debate.expire_cached_pages date
     end
 
@@ -101,7 +121,7 @@ class PersistedFile < ActiveRecord::Base
       index = 1
       debates = []
       files.each do |file|
-        puts "parsing: #{file.storage_name}"
+        # puts "parsing: #{file.storage_name}"
         parser = HansardParser.new(file.storage_name, file.parliament_url, file.debate_date)
         debate = parser.parse(index)
 
@@ -120,7 +140,7 @@ class PersistedFile < ActiveRecord::Base
       end
 
       debates.each_with_index do |debate, index|
-        puts "saving: #{debate.name}"
+        # puts "saving: #{debate.name}"
         begin
           debate.save!
         rescue Exception => e
@@ -134,14 +154,14 @@ class PersistedFile < ActiveRecord::Base
       files.each { |f| f.do_persist! }
       date = files.first.debate_date
       publication_status = files.first.publication_status
-      puts "persisted: #{date}"
+      # puts "persisted: #{date}"
 
       Debate.find_all_by_date_and_publication_status(date,publication_status).sort_by(&:debate_index).each do |debate|
         debate.create_url_slug
         debate.save!
       end
       SubDebate.find_all_by_url_slug(nil).each {|s| s.create_url_slug; s.save!}
-      puts "created url slugs: #{date}"
+      # puts "created url slugs: #{date}"
       Debate.expire_cached_pages date
     end
 
@@ -155,7 +175,7 @@ class PersistedFile < ActiveRecord::Base
           existing = PersistedFile.find_by_parliament_url_and_publication_status(stored.parliament_url, stored.publication_status)
           if existing && (existing.is_persisted || existing.debate_date < Date.new(2008,12,1) )
             msg = "#{stored.debate_date} #{stored.publication_status} #{files.size}"
-            puts "existing #{msg}"
+            # puts "existing #{msg}"
           else
             if stored.oral_answer
               load_questions_for(files)
@@ -169,15 +189,15 @@ class PersistedFile < ActiveRecord::Base
 
     def git_push msg="download on #{Date.today.to_s}"
       Dir.chdir storage_path
-      puts `git add .`
-      puts `git status`
-      puts `git commit -m '#{msg}'`
-      puts `git push`
+      # puts `git add .`
+      # puts `git status`
+      # puts `git commit -m '#{msg}'`
+      # puts `git push`
     end
 
     def git_pull
       Dir.chdir storage_path
-      puts `git pull`
+      # puts `git pull`
     end
 
     def storage_path
@@ -189,7 +209,7 @@ class PersistedFile < ActiveRecord::Base
     end
 
     def file_name(date, status, name)
-      puts "status=>#{status} name => #{name}"
+      # puts "status=>#{status} name => #{name}"
       date.strftime('%Y/%m/%d')+'/'+status+'/'+name
     end
 
@@ -225,7 +245,7 @@ class PersistedFile < ActiveRecord::Base
       make_directory record.debate_date, record.publication_status_name
 
       record.file_name = record.make_file_name
-      puts 'writing: ' + record.file_name
+      # puts 'writing: ' + record.file_name
       filepath = record.make_file_path
 
       File.open(filepath, 'w') do |file|
@@ -249,7 +269,7 @@ class PersistedFile < ActiveRecord::Base
         record.downloaded = true
         record.download_date = download_date
 
-        puts "adding #{filename} to persisted_files"
+        # puts "adding #{filename} to persisted_files"
         record.save!
       else
       end
@@ -286,9 +306,9 @@ class PersistedFile < ActiveRecord::Base
       files = find_all_by_name_and_publication_status(nil, publication_status, :conditions => 'debate_date > "2008-12-01"')
 
       unless files.empty?
-        puts "setting indexes for publication status #{publication_status}"
+        # puts "setting indexes for publication status #{publication_status}"
         files.collect(&:debate_date).uniq.sort.each do |date|
-          puts "setting indexes for: #{date}; publication status #{publication_status}"
+          # puts "setting indexes for: #{date}; publication status #{publication_status}"
           set_indexes_on_date date, publication_status
         end
       end
@@ -308,7 +328,7 @@ class PersistedFile < ActiveRecord::Base
         if advance_count != final_count && date.to_s != '2009-04-08' && date.to_s != '2011-02-09' && date.to_s != '2011-08-03'
           raise "expected #{advance_count} files for #{date}, but got #{final_count} final files, manual fix required."
         else
-          puts "count of final and advance files matches #{final_count} for #{date}."
+          # puts "count of final and advance files matches #{final_count} for #{date}."
         end
       end
     end
@@ -411,7 +431,7 @@ class PersistedFile < ActiveRecord::Base
         index = index_on_date < 10 ? "00#{index_on_date}" : (index_on_date < 100 ? "0#{index_on_date}" : index_on_date.to_s)
         self.name = "#{date}/#{type}/#{index}_#{name}"
       rescue Exception => e
-        puts "unexpected file_name syntax: #{file_name}"
+        # puts "unexpected file_name syntax: #{file_name}"
         raise e
       end
     else

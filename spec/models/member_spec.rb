@@ -1,4 +1,30 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: members
+#
+#  id                        :integer          not null, primary key
+#  person_id                 :integer
+#  electorate                :string(255)
+#  party_id                  :integer
+#  from_date                 :date
+#  to_date                   :date
+#  from_what                 :string(255)
+#  list_member_vacancy_url   :string(255)
+#  members_sworn_url         :string(255)
+#  maiden_statement_url      :string(255)
+#  to_what                   :string(255)
+#  membership_change_url     :string(255)
+#  resignation_url           :string(255)
+#  valedictory_statement_url :string(255)
+#  replaced_by_id            :integer
+#  term                      :integer
+#  created_at                :datetime
+#  updated_at                :datetime
+#  parliament_id             :integer
+#  image                     :string(255)
+#
+
+require 'spec_helper'
 
 describe Member do
 
@@ -45,7 +71,7 @@ describe Member do
     end
 
     it 'should return false if from_date and to_date are both nil' do
-      date = mock('date')
+      date = double('date')
       member = Member.new
       member.is_active_on(date).should be_false
     end

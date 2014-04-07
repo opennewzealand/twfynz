@@ -1,4 +1,24 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: persisted_files
+#
+#  id                 :integer          not null, primary key
+#  debate_date        :date
+#  publication_status :string(1)
+#  oral_answer        :boolean
+#  downloaded         :boolean
+#  download_date      :date
+#  is_persisted       :boolean
+#  persisted_date     :date
+#  file_name          :string(255)
+#  parliament_name    :text
+#  parliament_url     :string(255)
+#  index_on_date      :integer
+#  name               :string(255)
+#  written_status     :string(10)
+#
+
+require 'spec_helper'
 
 describe PersistedFile, 'the class' do
 

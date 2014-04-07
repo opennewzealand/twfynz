@@ -1,6 +1,31 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: nzl_events
+#
+#  id                 :integer          not null, primary key
+#  title              :string(255)
+#  about_type         :string(255)
+#  about_id           :integer
+#  status             :string(255)
+#  nzl_id             :string(255)
+#  version_stage      :string(255)
+#  version_date       :date
+#  version_committee  :string(255)
+#  committee_id       :integer
+#  information_type   :string(255)
+#  legislation_type   :string(255)
+#  year               :integer
+#  no                 :string(255)
+#  current_as_at_date :date
+#  link               :string(255)
+#  publication_date   :datetime
+#
+
 require 'morph'
 
+# TODO: Rename class to be more descriptive
+# does it mean New Zealand Legislative Event?
 class NzlEvent < ActiveRecord::Base
 
   belongs_to :about, :polymorphic => true
@@ -11,15 +36,14 @@ class NzlEvent < ActiveRecord::Base
   class << self
 
     def all_act_names
-      @all_act_names = find_all_by_information_type('act').collect(&:title).compact.sort.uniq unless @all_act_names
-      @all_act_names
+      @all_act_names ||= find_all_by_information_type('act').collect(&:title).compact.sort.uniq
     end
 
     def create_from params
-      publication_date = NzlEvent.parse_pub_date params[:pub_date]
+      NzlEvent.parse_pub_date params[:pub_date]
       existing = NzlEvent.find_all_by_title(params[:title])
       if existing.empty?
-        puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
+        # puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
         NzlEvent.create params
       else
         event = NzlEvent.new params
@@ -34,7 +58,7 @@ class NzlEvent < ActiveRecord::Base
           end
 
           unless should_ignore
-            puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
+            # puts 'creating ' + params[:title] + ' (' + publication_date.to_s + ')' if RAILS_ENV != 'test'
             event.save!
             saved_event = event
           end
@@ -50,7 +74,7 @@ class NzlEvent < ActiveRecord::Base
         keep = list.sort.reverse.uniq.collect(&:id)
         list.each do |event|
           unless keep.include? event.id
-            puts 'deleting ' + event.id.to_s
+            # puts 'deleting ' + event.id.to_s
             event.destroy
           end
         end
@@ -85,22 +109,24 @@ class NzlEvent < ActiveRecord::Base
     end
   end
 =end
+  
+  def description
+    @description
+  end
+
+  def description= description
+    @description = description
+  end
+
+  def pub_date
+    @pub_date
+  end
+
+  def pub_date= pub_date
+    @pub_date = pub_date
+  end
+
   protected
-    def description
-      @description
-    end
-
-    def description= description
-      @description = description
-    end
-
-    def pub_date
-      @pub_date
-    end
-
-    def pub_date= pub_date
-      @pub_date = pub_date
-    end
 
     def populate_publication_date
       if pub_date
@@ -151,7 +177,7 @@ public
         else
           require 'yaml'
           y self.attributes
-          puts "\ndidn't find Bill for event: " + self.title + ', ' + self.year.to_s + ' (' + self.publication_date.to_s + ')'
+          # puts "\ndidn't find Bill for event: " + self.title + ', ' + self.year.to_s + ' (' + self.publication_date.to_s + ')'
         end
       end
     end

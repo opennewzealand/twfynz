@@ -1,8 +1,20 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: bill_events
+#
+#  id          :integer          not null, primary key
+#  bill_id     :integer
+#  name        :string(255)
+#  date        :date
+#  source_type :string(255)
+#  source_id   :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+
+require 'spec_helper'
 
 describe BillEvent do
-
-  assert_model_belongs_to :bill
 
   describe 'when creating from NzlEvent' do
     before do
@@ -10,7 +22,7 @@ describe BillEvent do
       @stage = 'introduction'
       @date = Date.new(2007,12,4)
       @source_id = 18
-      @nzl_event = mock(NzlEvent, :about_type=>'Bill', :about_id=>@bill_id, :version_stage=> @stage, :version_date=> @date, :id=>@source_id )
+      @nzl_event = double(NzlEvent, :about_type=>'Bill', :about_id=>@bill_id, :version_stage=> @stage, :version_date=> @date, :id=>@source_id )
       @event = BillEvent.create_from_nzl_event(@nzl_event)
     end
 
@@ -45,7 +57,7 @@ describe BillEvent do
       @event2 = "Royal Assent"
       @date1 = Date.new(2003,10,16)
       @date2 = Date.new(2003,10,21)
-      @bill = mock(Bill, :id=> 123,
+      @bill = double(Bill, :id=> 123,
           :events_by_date => [[@date1, @event1], [@date2, @event2]],
           :debates_in_groups_by_name => [],
           :debates => [])

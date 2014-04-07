@@ -101,21 +101,21 @@ module PartyDownloader
         logo_path = "#{Rails.root}/public/images/parties/#{party.logo}"
 
         unless File.exists?(logo_path)
-          puts 'opening ' + data.logo
+          # puts 'opening ' + data.logo
           resp = response 'www.elections.org.nz', data.logo
           if resp.code == "200"
-            puts File.dirname(logo_path)
+            # puts File.dirname(logo_path)
             FileUtils.mkdir_p File.dirname(logo_path)
             File.open(logo_path, 'wb') do |f|
               f.write resp.body
             end
-            puts 'written ' + logo_path
+            # puts 'written ' + logo_path
           end
         end
       end
 
-      puts 'saving ' + party.name
-      puts 'short name ' + party.short
+      # puts 'saving ' + party.name
+      # puts 'short name ' + party.short
       party.save
     end; nil
 

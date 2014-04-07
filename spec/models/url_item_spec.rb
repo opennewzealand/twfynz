@@ -1,31 +1,31 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe UrlItem do
 
   describe 'when finding title from URL path' do
 
-    def mock_analytics_item(path)
-      mock('item', :path => path)
+    def double_analytics_item(path)
+      double('item', :path => path)
     end
 
-    def mock_bill
+    def double_bill
       bill_url = %Q|crimes_abolition_of_force_justification|
-      item = mock_analytics_item("/bills/#{bill_url}")
+      item = double_analytics_item("/bills/#{bill_url}")
       title = 'Crimes (Substituted Section 59) Amendment Bill'
-      bill = mock('Bill',:bill_name => title)
+      bill = double('Bill',:bill_name => title)
       Bill.should_receive(:find_by_url).with(bill_url).and_return(bill)
       return item, title
     end
 
     it 'should find bill title' do
-      analytics_item, title = mock_bill
+      analytics_item, title = double_bill
       item = UrlItem.new(analytics_item)
       item.title.should == title
       item.date.should be_nil
     end
 
     it 'should find submissions on bill title' do
-      path, title = mock_bill
+      path, title = double_bill
       item = UrlItem.new(path)
       item.title.should == title
       item.date.should be_nil
@@ -36,10 +36,10 @@ describe UrlItem do
       url_slug = 'emissions_trading_scheme'
       path = "/portfolios/#{portfolio_url}/2008/may/14/#{url_slug}"
       title = 'Emissions Trading Scheme—Transport Sector'
-      debate = mock('debate', :name => title)
+      debate = double('debate', :name => title)
       Debate.should_receive(:find_by_about_on_date_with_slug).with(Portfolio, portfolio_url, an_instance_of(DebateDate), url_slug).and_return(debate)
 
-      item = UrlItem.new(mock_analytics_item(path))
+      item = UrlItem.new(double_analytics_item(path))
       item.title.should == title
       item.date.should == Date.new(2008,5,14)
     end
@@ -51,10 +51,10 @@ describe UrlItem do
       bill_name = %Q|KiwiSaver Bill|
       debate_name = %Q|First Reading|
       title = "#{bill_name}, #{debate_name}"
-      debate = mock('debate', :name => debate_name, :parent_name=>bill_name)
+      debate = double('debate', :name => debate_name, :parent_name=>bill_name)
       Debate.should_receive(:find_by_about_on_date_with_slug).with(Bill, bill_url, an_instance_of(DebateDate), url_slug).and_return(debate)
 
-      item = UrlItem.new(mock_analytics_item(path))
+      item = UrlItem.new(double_analytics_item(path))
       item.title.should == title
       item.date.should == Date.new(2006,3,2)
     end
@@ -66,10 +66,10 @@ describe UrlItem do
       path = "/#{url_category}/2006/mar/02/#{url_slug}"
       parent_name = 'Appointments'
       debate_name = 'Chief Ombudsman'
-      debate = mock('debate', :name => debate_name, :parent_name=>parent_name)
+      debate = double('debate', :name => debate_name, :parent_name=>parent_name)
       Debate.should_receive(:find_by_url_category_and_url_slug).with(an_instance_of(DebateDate), url_category, url_slug).and_return(debate)
 
-      item = UrlItem.new(mock_analytics_item(path))
+      item = UrlItem.new(double_analytics_item(path))
       item.title.should == "#{parent_name}, #{debate_name}"
       item.date.should == Date.new(2006,3,2)
     end
@@ -79,7 +79,7 @@ describe UrlItem do
       path = "/debates/2008/jun/17"
       Debate.should_receive(:find_by_date).with('2008','jun','17').and_return [mock_model(OralAnswers)]
 
-      item = UrlItem.new(mock_analytics_item(path))
+      item = UrlItem.new(double_analytics_item(path))
       item.title.should == "Questions for Oral Answer, 17 June 2008"
       item.date.should == Date.new(2008,6,17)
     end

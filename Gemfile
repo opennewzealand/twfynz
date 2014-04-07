@@ -1,11 +1,11 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
-gem 'rails', '3.2.14'
+gem 'rails', '3.2.17'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mysql2'
+gem 'pg'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -44,5 +44,17 @@ gem 'sass-rails'
 gem 'compass-rails'
 gem 'thin'
 gem 'nokogiri'
-gem 'debugger'
-gem "rspec-rails", :group => [:development, :test]
+
+group :test do
+  gem 'factory_girl_rails'
+end
+
+group :development, :test do
+  gem 'rspec-rails'
+  gem 'guard-rspec'
+end
+
+group :development do
+  gem 'pry-rails'
+  gem 'annotate'
+end

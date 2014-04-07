@@ -1,4 +1,17 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: order_paper_alerts
+#
+#  id               :integer          not null, primary key
+#  order_paper_date :date
+#  name             :string(255)
+#  alert_date       :date
+#  url              :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
+require 'spec_helper'
 
 describe OrderPaperAlert do
   before do
@@ -21,23 +34,23 @@ describe OrderPaperAlert do
 
   describe 'when asked if in past' do
     it 'should return true if alert date in past' do
-      @alert.stub!(:alert_date).and_return(Date.today - 1)
-      @alert.stub!(:order_paper_date).and_return Date.today
+      @alert.stub(:alert_date).and_return(Date.today - 1)
+      @alert.stub(:order_paper_date).and_return Date.today
       @alert.in_past?.should be_true
     end
     it 'should return true if order paper date in past' do
-      @alert.stub!(:alert_date).and_return Date.today
-      @alert.stub!(:order_paper_date).and_return(Date.today - 1)
+      @alert.stub(:alert_date).and_return Date.today
+      @alert.stub(:order_paper_date).and_return(Date.today - 1)
       @alert.in_past?.should be_true
     end
     it 'should return false if order paper date and alert date are today' do
-      @alert.stub!(:alert_date).and_return Date.today
-      @alert.stub!(:order_paper_date).and_return Date.today
+      @alert.stub(:alert_date).and_return Date.today
+      @alert.stub(:order_paper_date).and_return Date.today
       @alert.in_past?.should be_false
     end
     it 'should return false if order paper date and alert date in future' do
-      @alert.stub!(:alert_date).and_return(Date.today + 1)
-      @alert.stub!(:order_paper_date).and_return(Date.today + 1)
+      @alert.stub(:alert_date).and_return(Date.today + 1)
+      @alert.stub(:order_paper_date).and_return(Date.today + 1)
       @alert.in_past?.should be_false
     end
   end
@@ -48,7 +61,7 @@ describe OrderPaperAlert do
         it 'should send an update via twitter and save alert' do
           OrderPaperAlert.should_receive(:find_all_by_name_and_alert_date).with(@name, @alert_date).and_return []
           tweet_message = 'tweet_message'
-          @alert.stub!(:in_past?).and_return false
+          @alert.stub(:in_past?).and_return false
           @alert.should_receive(:tweet_message).and_return tweet_message
           Twfynz.should_receive(:twitter_update).with(tweet_message)
           @alert.should_receive(:save!)
@@ -58,7 +71,7 @@ describe OrderPaperAlert do
 
       describe "and order paper in the past" do
         it 'should not send an update via twitter and not save alert' do
-          @alert.stub!(:in_past?).and_return true
+          @alert.stub(:in_past?).and_return true
           Twfynz.should_not_receive(:twitter_update)
           @alert.should_not_receive(:save!)
           @alert.tweet_alert
@@ -67,10 +80,10 @@ describe OrderPaperAlert do
     end
     describe "for the second time on an alert date and order paper is not in the past" do
       before do
-        @alert.stub!(:in_past?).and_return false
+        @alert.stub(:in_past?).and_return false
       end
       it 'should not send an update via twitter and not save alert' do
-        OrderPaperAlert.should_receive(:find_all_by_name_and_alert_date).with(@name, @alert_date).and_return [mock('alert')]
+        OrderPaperAlert.should_receive(:find_all_by_name_and_alert_date).with(@name, @alert_date).and_return [double('alert')]
         Twfynz.should_not_receive(:twitter_update)
         @alert.should_not_receive(:save!)
         @alert.tweet_alert

@@ -1,4 +1,16 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: portfolios
+#
+#  id                  :integer          not null, primary key
+#  beehive_id          :integer
+#  portfolio_name      :string(82)       not null
+#  url                 :text
+#  dpmc_id             :string(42)
+#  dpmc_responsibility :boolean
+#
+
 class Portfolio < ActiveRecord::Base
 
   has_many :ministers, :foreign_key => 'responsible_for_id'

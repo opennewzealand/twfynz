@@ -1,3 +1,26 @@
+# == Schema Information
+#
+# Table name: nzl_events
+#
+#  id                 :integer          not null, primary key
+#  title              :string(255)
+#  about_type         :string(255)
+#  about_id           :integer
+#  status             :string(255)
+#  nzl_id             :string(255)
+#  version_stage      :string(255)
+#  version_date       :date
+#  version_committee  :string(255)
+#  committee_id       :integer
+#  information_type   :string(255)
+#  legislation_type   :string(255)
+#  year               :integer
+#  no                 :string(255)
+#  current_as_at_date :date
+#  link               :string(255)
+#  publication_date   :datetime
+#
+
 one:
   title: one
   about_type: Bill

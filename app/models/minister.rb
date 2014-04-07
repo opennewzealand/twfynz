@@ -1,4 +1,13 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: ministers
+#
+#  id                 :integer          not null, primary key
+#  responsible_for_id :integer          not null
+#  title              :string(82)       not null
+#
+
 class Minister < ActiveRecord::Base
 
   belongs_to :portfolio, :foreign_key => 'responsible_for_id'

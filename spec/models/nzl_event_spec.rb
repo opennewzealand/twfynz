@@ -1,18 +1,41 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: nzl_events
+#
+#  id                 :integer          not null, primary key
+#  title              :string(255)
+#  about_type         :string(255)
+#  about_id           :integer
+#  status             :string(255)
+#  nzl_id             :string(255)
+#  version_stage      :string(255)
+#  version_date       :date
+#  version_committee  :string(255)
+#  committee_id       :integer
+#  information_type   :string(255)
+#  legislation_type   :string(255)
+#  year               :integer
+#  no                 :string(255)
+#  current_as_at_date :date
+#  link               :string(255)
+#  publication_date   :datetime
+#
 
-describe "An NzlEvent", :shared => true do
+require 'spec_helper'
 
-  before(:all) do
+shared_examples_for "An NzlEvent" do
+
+  before(:each) do
     if @bill_id
       bill = mock_model(Bill)
-      bill.stub!(:id).and_return @bill_id
-      bill.stub!(:expire_cached_pages)
-      Bill.stub!(:find_all_by_plain_bill_name_and_year).and_return [bill]
+      bill.stub(:id).and_return @bill_id
+      bill.stub(:expire_cached_pages)
+      Bill.stub(:find_all_by_plain_bill_name_and_year).and_return [bill]
     end
     if @committee_id
       committee = mock_model(Committee)
-      committee.stub!(:id).and_return @committee_id
-      Committee.stub!(:from_name).and_return committee
+      committee.stub(:id).and_return @committee_id
+      Committee.stub(:from_name).and_return committee
     end
     @nzl_event = NzlEvent.new :title => @title,
         :description => @description,
@@ -194,7 +217,7 @@ describe NzlEvent, 'on creation from feed data when two Bills match' do
   it 'should raise exception when two bills match' do
     bill = mock_model(Bill)
     other_bill = mock_model(Bill)
-    Bill.stub!(:find_all_by_plain_bill_name_and_year).and_return [bill, other_bill]
+    Bill.stub(:find_all_by_plain_bill_name_and_year).and_return [bill, other_bill]
 
     nzl_event = NzlEvent.new example_nzl_event_data
     lambda { nzl_event.valid? }.should raise_error(Exception, /more than one matching bill/)
@@ -250,10 +273,10 @@ describe NzlEvent, 'creating using create_from method' do
   it 'should not create a new NzlEvent if there is a matching NzlEvent with all attributes the same' do
     data = example_nzl_event_data
     existing = mock_model(NzlEvent)
-    existing.stub!(:attributes).and_return :title => 'The Same'
+    existing.stub(:attributes).and_return :title => 'The Same'
 
     event = mock_model(NzlEvent)
-    event.stub!(:attributes).and_return :title => 'The Same'
+    event.stub(:attributes).and_return :title => 'The Same'
     event.should_receive(:valid?).and_return true
 
     NzlEvent.should_receive(:find_all_by_title).with(data[:title]).and_return [existing]
@@ -265,10 +288,10 @@ describe NzlEvent, 'creating using create_from method' do
   it 'should create a new NzlEvent if othere NzlEvents with matching title have different attributes' do
     data = example_nzl_event_data
     existing = mock_model(NzlEvent)
-    existing.stub!(:attributes).and_return :title => 'The Same', :link => 'Old'
+    existing.stub(:attributes).and_return :title => 'The Same', :link => 'Old'
 
     event = mock_model(NzlEvent)
-    event.stub!(:attributes).and_return :title => 'The Same', :link => 'Not the same'
+    event.stub(:attributes).and_return :title => 'The Same', :link => 'Not the same'
     event.should_receive(:valid?).and_return true
     event.should_receive(:save!)
 

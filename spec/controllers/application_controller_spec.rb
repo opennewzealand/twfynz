@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe ApplicationController do
 
@@ -16,7 +16,7 @@ describe ApplicationController do
 
   describe 'host is parlywords.org.nz' do
     before do
-      controller.stub!(:is_parlywords_request?).and_return true
+      controller.stub(:is_parlywords_request?).and_return true
     end
     describe 'when asked for home' do
       def do_get
@@ -47,7 +47,7 @@ describe ApplicationController do
       end
       describe 'and there are no parly words on date' do
         before do
-          SittingDay.stub!(:has_parlywords?).and_return false
+          SittingDay.stub(:has_parlywords?).and_return false
         end
         it 'should show 404' do
           do_get
@@ -56,7 +56,7 @@ describe ApplicationController do
       end
       describe 'and there are parly words on date' do
         before do
-          SittingDay.stub!(:has_parlywords?).and_return true
+          SittingDay.stub(:has_parlywords?).and_return true
         end
         it 'should be successful' do
           do_get
@@ -80,8 +80,8 @@ describe ApplicationController do
 
   describe 'host is theyworkforyou.co.nz' do
     before do
-      Parliament.stub!(:latest).and_return mock(Parliament, :ordinal=>'48th')
-      controller.stub!(:is_parlywords_request?).and_return false
+      Parliament.stub(:latest).and_return double(Parliament, :ordinal=>'48th')
+      controller.stub(:is_parlywords_request?).and_return false
     end
     describe 'when asked for home' do
       def do_get

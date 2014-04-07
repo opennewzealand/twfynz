@@ -1,4 +1,30 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: debates
+#
+#  id                 :integer          not null, primary key
+#  date               :date             not null
+#  debate_index       :integer          not null
+#  publication_status :string(1)        not null
+#  source_url         :string(255)
+#  type               :string(255)      not null
+#  hansard_volume     :integer
+#  start_page         :integer
+#  name               :string(255)      not null
+#  css_class          :string(255)      not null
+#  debate_id          :integer
+#  about_type         :string(255)
+#  about_id           :integer
+#  about_index        :integer
+#  answer_from_type   :string(255)
+#  answer_from_id     :integer
+#  oral_answer_no     :integer
+#  re_oral_answer_no  :integer
+#  url_slug           :string(255)
+#  url_category       :string(255)
+#
+
 require 'expire_cache'
 require 'extend_string'
 
@@ -355,7 +381,7 @@ class Debate < ActiveRecord::Base
       advance.each_key { |date| uncorrected.delete date }
       debates = (uncorrected.values << advance.values << final.values).flatten.sort {|a,b| b.date <=> a.date}
 
-      # puts uncorrected.size.to_s + ' ' + advance.size.to_s + ' ' + final.size.to_s
+      # # puts uncorrected.size.to_s + ' ' + advance.size.to_s + ' ' + final.size.to_s
 
       debates = debates.delete_if {|d| d.is_a?(BillDebate) && d.sub_debates.size > 0 } if exclude_bill_parents
       debates
@@ -408,9 +434,9 @@ class Debate < ActiveRecord::Base
 
     # expires other pages in that month
     def expire_cached_pages date
-      puts "finding all in month: #{date.year} #{date.month}"
+      # puts "finding all in month: #{date.year} #{date.month}"
       debates = Debate.find_by_date date.year, date.month, nil
-      puts 'found: '+debates.size.to_s
+      # puts 'found: '+debates.size.to_s
       debates.each { |d| d.expire_cached_pages }
     end
 
@@ -422,7 +448,7 @@ class Debate < ActiveRecord::Base
       contributions.each { |c| debate_to_bill_names[c.debate] = c.bill_names }
 
       debate_to_bill_names.each_pair { |d,b| puts d.id.to_s + " -> " + b.join(' | ') }
-      puts "\n unknown bills:"
+      # puts "\n unknown bills:"
       debate_to_bill_names.each_pair do |d, bill_names|
         bill_names.select{|n| Bill.from_name_and_date(n, d.date).nil? }.each { |name| puts "#{d.date} #{name}" }
       end ;nil
@@ -433,7 +459,7 @@ class Debate < ActiveRecord::Base
         bills.each do |bill|
           topic = DebateTopic.find_or_create_by_debate_id_and_topic_id_and_topic_type(debate.id, bill.id, 'Bill')
           BillEvent.refresh_events_from_bill bill
-          puts topic.inspect
+          # puts topic.inspect
         end
         nil
       end ; nil

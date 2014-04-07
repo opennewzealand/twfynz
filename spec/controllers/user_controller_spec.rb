@@ -1,10 +1,6 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe UserController, 'signup' do
-
-  it "should be accessible via route '/users/signup'" do
-    route_for(:controller => "user", :action => "signup").should == "/users/signup"
-  end
 
   it "should show initial signup page on GET request" do
     get :signup
@@ -25,20 +21,8 @@ describe UserController, 'signup' do
   end
 end
 
-describe UserController, 'signup organisation' do
-  fixtures :users
-
-  it "should be accessible via route '/users/signup/organisation'" do
-    route_for(:controller => "user", :action => "signup_organisation").should == "/users/signup/organisation"
-  end
-end
-
 describe UserController, 'signup individual' do
   fixtures :users
-
-  it "should be accessible via route '/users/signup/individual'" do
-    route_for(:controller => "user", :action => "signup_individual").should == "/users/signup/individual"
-  end
 
   it "should create user and redirect to user_home" do
     post :signup_individual, :user => { :login => "newbob", :password => "newpassword", :password_confirmation => "newpassword", :email => "newbob@mcbob.com" }
@@ -72,7 +56,7 @@ describe UserController, 'signup individual' do
   end
 
   it 'should redirect to user_home page if user logged in' do
-    user = mock(User, :login=>'bob')
+    user = double(User, :login=>'bob')
     User.should_receive(:authenticate).with(user.login,"test").and_return user
     post :login, :user=>{ :login => user.login, :password => "test"}
     response.should be_redirect
@@ -89,7 +73,7 @@ describe UserController, 'login' do
   fixtures :users
 
   it "should authenicate user and redirect to user_home" do
-    user = mock(User, :login=>'bob')
+    user = double(User, :login=>'bob')
     User.should_receive(:authenticate).with(user.login,"test").and_return user
     post :login, :user=> { :login => user.login, :password => "test" }
     session[:user].should_not be_nil
@@ -140,7 +124,7 @@ describe UserController, 'forgot_password' do
   fixtures :users
 
   it "GET 'forgot_password' should be successful" do
-    user = mock(User, :login=>'bob')
+    user = double(User, :login=>'bob')
     User.should_receive(:authenticate).with(user.login,"test").and_return user
     post :login, :user=>{ :login => user.login, :password => "test"}
     response.should be_redirect

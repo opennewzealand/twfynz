@@ -26,15 +26,15 @@ class MpsDownloader
 
 
             img_src = "/images/people/#{id}_Large.jpg"
-            puts 'downloading: ' + img_src
+            # puts 'downloading: ' + img_src
             self.download_image save_to, "www.national.org.nz", img_src
 
             bio_page = "http://www.national.org.nz/MP.aspx?Id=#{id}"
             member.image = "2008/#{name}.jpg"
-            puts 'setting member image: ' + member.image
+            # puts 'setting member image: ' + member.image
             member.save!
             person.party_bio_url = bio_page
-            puts 'setting person bio: ' + bio_page
+            # puts 'setting person bio: ' + bio_page
             person.save!
           end
         else
@@ -56,7 +56,7 @@ class MpsDownloader
         name = name.sub('Hon ','').sub('Dr ','').sub('Mr ','').sub(' QSO','').sub(' ONZM','').downcase.gsub(' ','_')
         save_to = "/Users/x/apps/kiwimp/twfynz_search/public/images/mps/2008/#{name}_lg.jpg"
 
-        puts name + ' ' + bio_page + ' ' + image
+        # puts name + ' ' + bio_page + ' ' + image
       end
     end; nil
   end
@@ -74,7 +74,7 @@ class MpsDownloader
           end
         end
       end
-      puts img_src
+      # puts img_src
     end
   end
 
@@ -83,7 +83,7 @@ class MpsDownloader
     mps.each do |mp|
       doc = Hpricot open(mp.parliament_url)
 
-      puts mp.id_name
+      # puts mp.id_name
       img_src = doc.at('td.image').at('img')
 
       if img_src
@@ -132,7 +132,7 @@ class MpsDownloader
             :elected => "2008",
             :member_of_id => party.id,
             :id_name => first.downcase+'_'+last.downcase})
-          puts 'saving person: ' + person.full_name
+          # puts 'saving person: ' + person.full_name
           person.save!
         end
 
@@ -145,7 +145,7 @@ class MpsDownloader
             :from_date => "2008-11-08",
             :party_id => party.id,
             :person_id => person.id})
-          puts 'saving member: ' + person.full_name + ' ' + party.short + ' ' + electorate
+          # puts 'saving member: ' + person.full_name + ' ' + party.short + ' ' + electorate
           member.save!
         end
       else
@@ -189,14 +189,14 @@ class MpsDownloader
         term = details.split(',').last.squish
         whole_line, party_name, start_date, end_date = *term.match(/(?:([^\d]+).* )?(\d{1,2} .+ \d{4})\s*(?:-|to)\s*(\d{1,2} .+ \d{4})/)
 
-        puts "term is #{term}"
+        # puts "term is #{term}"
 
         if party_name.blank?
           party_name = details.match(/^([^\d]+)/)[1].squish
         end
         party_name.gsub!('Pary', 'Party')
 
-        puts "party name: #{party_name} start_date: #{start_date} end_date: #{end_date}"
+        # puts "party name: #{party_name} start_date: #{start_date} end_date: #{end_date}"
 
         party = Party.from_vote_name(party_name)
 
@@ -213,7 +213,7 @@ class MpsDownloader
             :member_of_id => party.id,
             :id_name => first.downcase+'_'+last.downcase
           )
-          puts "Created person #{person.full_name}"
+          # puts "Created person #{person.full_name}"
         end
 
         member = Member.where(person_id: person.id).first
@@ -226,7 +226,7 @@ class MpsDownloader
             :party_id => party.id,
             :person_id => person.id
           )
-          puts 'saving member: ' + person.full_name + ' ' + party.short
+          # puts 'saving member: ' + person.full_name + ' ' + party.short
           member.save!
         end
       end

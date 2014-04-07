@@ -1,4 +1,30 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: debates
+#
+#  id                 :integer          not null, primary key
+#  date               :date             not null
+#  debate_index       :integer          not null
+#  publication_status :string(1)        not null
+#  source_url         :string(255)
+#  type               :string(255)      not null
+#  hansard_volume     :integer
+#  start_page         :integer
+#  name               :string(255)      not null
+#  css_class          :string(255)      not null
+#  debate_id          :integer
+#  about_type         :string(255)
+#  about_id           :integer
+#  about_index        :integer
+#  answer_from_type   :string(255)
+#  answer_from_id     :integer
+#  oral_answer_no     :integer
+#  re_oral_answer_no  :integer
+#  url_slug           :string(255)
+#  url_category       :string(255)
+#
+
+require 'spec_helper'
 
 describe OralAnswer, "creating url slug" do
 
@@ -93,14 +119,14 @@ describe OralAnswer, "creating url slug" do
     about_type = about.keys.first
     about_name = about.values.first
     about_class = Object.const_get(about_type.to_s.capitalize)
-    about = mock(about_class)
-    about.stub!(:full_name).and_return about_name
-    about.stub!(:class).and_return about_class
+    about = double(about_class)
+    about.stub(:full_name).and_return about_name
+    about.stub(:class).and_return about_class
 
     @answer = new_answer name
-    @answer.stub!(:about).and_return about
-    @answer.stub!(:about_type).and_return about_class.name
-    @answer.stub!(:about_id).and_return 21
+    @answer.stub(:about).and_return about
+    @answer.stub(:about_type).and_return about_class.name
+    @answer.stub(:about_id).and_return 21
     @answer.create_url_slug
     @answer.url_slug.should == expected
   end

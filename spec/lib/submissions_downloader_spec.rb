@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe SubmissionsDownloader do
 
@@ -121,8 +121,8 @@ describe SubmissionsDownloader do
   end
 
   it 'should return true if there are submissions on page' do
-    doc = mock('doc')
-    committees = [mock('committee')]
+    doc = double('doc')
+    committees = [double('committee')]
 
     SubmissionsDownloader.stub(:open_page).and_return doc
     SubmissionsDownloader.stub(:find_committees).and_return committees

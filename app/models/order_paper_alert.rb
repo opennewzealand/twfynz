@@ -1,4 +1,17 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: order_paper_alerts
+#
+#  id               :integer          not null, primary key
+#  order_paper_date :date
+#  name             :string(255)
+#  alert_date       :date
+#  url              :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 class OrderPaperAlert < ActiveRecord::Base
 
   def tweet_alert

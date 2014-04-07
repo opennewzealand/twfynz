@@ -2,13 +2,55 @@
 require File.dirname(__FILE__) + '/hansard_parser_spec_helper'
 
 describe HansardParser, "when passed Business Statement 2007-07-19" do
+
+  let(:html_fixture) do
+    %Q|<html>
+<head>
+<title>New Zealand Parliament - Business Statement</title>
+<meta name="DC.Date" content="2007-07-19T12:00:00.000Z" />
+</head>
+<body>
+<div class="copy">
+  <div class="section">
+    <a name="DocumentTitle"></a>
+    <h1>Business Statement</h1>
+    <a name="DocumentReference"></a>
+    <p>[Advance Copy - Subject to minor change before inclusion in Bound Volume.]</p>
+    <div class="DebateAlone">
+      <a name="page_10539"></a>
+      <h2>Thursday, 19 July 2007</h2>
+      <p class="a"><strong>Madam Speaker</strong> took the Chair at 2 p.m.</p>
+      <p class="a"><strong>Prayers</strong>.</p>
+      <h2>Business Statement</h2>
+      <div class="Speech"><p class="Speech"><a name="time_13:59:40"></a>
+        <strong>Hon Dr MICHAEL CULLEN (Leader of the House)</strong>
+        <strong>:</strong> Next week in the House progress is to be made on the next stages of the Weathertight Homes Resolution Services (Remedies) Amendment Bill, the Mental Health Commission Amendment Bill, the Wills Bill, and the Major Events Management Bill. Priority will also be given to the first readings of the Social Assistance (Debt Prevention and Minimisation) Amendment Bill, and the Electricity (Disconnection and Low Fixed Charges) Amendment Bill. Wednesday is a members’ day.</p>
+      </div>
+      <div class="Speech"><p class="Speech"><a name="time_14:00:10"></a>
+        <strong>GERRY BROWNLEE (National—Ilam)</strong>
+        <strong>:</strong> In</p>
+      </div>
+      <div class="Speech"><p class="Speech"><a name="time_14:00:31"></a>
+        <strong>Hon Dr MICHAEL CULLEN (Leader of the House)</strong>
+        <strong>:</strong> I</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>|
+  end
+
   before(:all) do
     @name = 'Business Statement'
     @publication_status = 'A'
     @date = Date.new(2007,7,19)
     @debate_index = 1
-    HansardParser.stub(:load_file).and_return html
-    @debate = parse_hansard 'nil', @debate_index
+  end
+
+  before :each do
+    HansardParser.stub(:load_file).and_return html_fixture
+    @debate = parse_hansard 'stubbed_file', @debate_index
   end
 
   after(:all) do
@@ -88,38 +130,6 @@ describe HansardParser, "when passed Tabling of Documents — Code of Conduct fo
 
   it_should_behave_like "All parent debates"
 
-  def html
-    %Q|<html>
-<head>
-<title>New Zealand Parliament - Tabling of Documents — Code of Conduct for Members of Parliament</title>
-<meta name="DC.Date" content="2007-08-09T12:00:00.000Z" />
-</head>
-<body>
-<div class="copy">
-  <div class="section">
-    <a name="DocumentTitle"></a>
-    <h1>Tabling of Documents — Code of Conduct for Members of Parliament</h1>
-    <a name="DocumentReference"></a>
-    <p>[Advance Copy - Subject to minor change before inclusion in Bound Volume.]</p>
-
-    <div class="Debate">
-      <h2>Tabling of Documents</h2>
-      <h2>Code of Conduct for Members of Parliament</h2>
-      <div class="Speech">
-        <p class="Speech">
-          <a name="time_14:03:02"></a>
-          <strong>Dr PITA SHARPLES (Co-Leader—Māori Party)</strong>
-          <strong>:</strong> I seek leave to table my signed copy of the code of conduct for members of Parliament. I was away at the time when our parties put this forward.</p>
-        <ul class="">
-          <li>Document, by leave, laid on the Table of the House.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-</body>
-</html>|
-  end
 end
 
 

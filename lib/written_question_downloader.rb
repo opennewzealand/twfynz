@@ -24,9 +24,9 @@ class WrittenQuestionDownloader
   end
 
   def open_index_page page
-#    url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?search=1232319134&p=#{page}"
+    # url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?search=1232319134&p=#{page}"
     url = "http://www.parliament.nz/en-NZ/PB/Debates/QWA/Default.htm?p=#{page}"
-    puts "opening #{url}"
+    # puts "opening #{url}"
     Hpricot open(url)
   end
 

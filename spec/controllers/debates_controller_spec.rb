@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe DebatesController, 'when receiving request for debate using index number' do
 
@@ -7,10 +7,10 @@ describe DebatesController, 'when receiving request for debate using index numbe
     month = 'may'
     day = '14'
     index = '24'
-    date = mock('date', :is_valid_date? => true)
+    date = double('date', :is_valid_date? => true)
 
-    Debate.stub!(:index_id).and_return index
-    DebateDate.stub!(:new).and_return date
+    Debate.stub(:index_id).and_return index
+    DebateDate.stub(:new).and_return date
 
     debate = mock_model(DebateAlone)
     id_hash = {:day=>day, :month=>month, :year=>year, :url_category => 'general_debate', :url_slug => nil}
@@ -85,8 +85,8 @@ describe DebatesController, 'when getting show_debate' do
     category = 'visitors'
     slug = 'australia'
     year = '2008'; month = 'apr'; day = '17'
-    date = mock(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true)
-    DebateDate.stub!(:new).and_return date
+    date = double(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true)
+    DebateDate.stub(:new).and_return date
     debate = mock_model(SubDebate, :debate => mock_model(ParentDebate))
     Debate.should_receive(:find_by_url_category_and_url_slug).with(date, category, slug).and_return debate
     get 'show_debate', :controller => 'debates', :action=>'show_debate', :day=>day, :month=>month, :year=>year, :url_category => category, :url_slug => slug
@@ -98,8 +98,8 @@ describe DebatesController, 'when getting show_debate' do
     category = 'general_debate'
     slug = nil
     year = '2008'; month = 'apr'; day = '17'
-    date = mock(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true)
-    DebateDate.stub!(:new).and_return date
+    date = double(DebateDate, :year=>year, :month=>month, :day=>day, :is_valid_date? => true)
+    DebateDate.stub(:new).and_return date
     debate = mock_model(SubDebate, :debate => mock_model(ParentDebate))
     Debate.should_receive(:find_by_url_category_and_url_slug).with(date, category, slug).and_return debate
     get 'show_debate', :controller => 'debates', :action=>'show_debate', :day=>day, :month=>month, :year=>year, :url_category => category, :url_slug => slug

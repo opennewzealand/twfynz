@@ -1,4 +1,19 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: trackings
+#
+#  id              :integer          not null, primary key
+#  item_type       :string(255)
+#  item_id         :integer
+#  user_id         :integer
+#  tracking_on     :boolean
+#  email_alert     :boolean
+#  include_in_feed :boolean
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
+require 'spec_helper'
 
 describe Tracking do
   fixtures :trackings

@@ -24,7 +24,7 @@ class BillProxy
 
   def obtain_text url
     @url = URI.parse(URI.encode(url)) # sanitise malformed URIs
-    puts '  downloading ' + url
+    # puts '  downloading ' + url
     self.parliament_url = url
 
     text = ''
@@ -74,7 +74,7 @@ class BillProxy
 
     populate_dates attributes
 
-    puts '    ' + attributes.inspect
+    # puts '    ' + attributes.inspect
 
     attributes.delete(:sc_reports_interim_report_interim_report) # temp fix
     attributes.delete(:first_reading_withdrawn) # temp fix

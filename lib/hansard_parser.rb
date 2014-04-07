@@ -46,8 +46,9 @@ class HansardParser
     @doc ||= HansardParser.load_doc(@file)
     type_el = @doc.at_css('.copy .section:nth(1) div:nth(1)')
 
+
     if type_el.nil?
-      puts "Could not find type element. continuing"
+      # puts "Could not find type element. continuing"
       return nil
     else
       type = type_el.attr('class').to_s
@@ -103,7 +104,7 @@ class HansardParser
       month = yyyy_mm_dd[5..6].to_i
       day = yyyy_mm_dd[8..9].to_i
       dc_date = Date.new(year, month, day)
-      puts "dc_date different from file_date: #{dc_date}; #{@debate_date}" if dc_date != @debate_date
+      # # puts "dc_date different from file_date: #{dc_date}; #{@debate_date}" if dc_date != @debate_date
 
       @debate_date # use debate date from file name
     end
@@ -223,7 +224,7 @@ class HansardParser
       begin
         debate.debate.name.include?(text) || debate.name.include?(text)
       rescue Exception => e
-        puts text
+        # puts text
         raise e
       end
     end
@@ -233,7 +234,7 @@ class HansardParser
     end
 
     def raise_unexpected node, name, sub=''
-      raise "found #{node.name} not in #{sub}debate name #{name}: #{node.to_s}"
+      raise "did not find #{node.name} in #{sub}debate name #{name}: #{node.to_s}"
     end
 
     def handle_h1_h2_h3 node, debate
@@ -267,7 +268,7 @@ class HansardParser
           raise_unexpected(node, debate.name)
         end
       elsif debate.is_a?(DebateAlone)
-        raise_unexpected(node, debate.name) unless is_date?(text)
+        raise_unexpected(node, debate.name) unless is_date?(text) or text == 'Business Statement'
       else
         raise_unexpected(node, debate.name)
       end
@@ -626,7 +627,7 @@ class HansardParser
             raise 'unexpected div ' + div.to_s
           end
         else
-          puts "Ignoring unexpected div #{div}"
+          # puts "Ignoring unexpected div #{div}"
 
           #raise 'unexpected div ' + div.to_s
       end
@@ -998,7 +999,7 @@ class HansardParser
           begin
             text = node.txt
           rescue Exception => e
-            puts node.to_s
+            # puts node.to_s
             raise e
           end
           if node.name[/^h\d$/] && text == debate.sub_debates[index+1].name

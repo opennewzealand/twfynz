@@ -134,7 +134,7 @@ class GetsContract
         low = $1.to_f * million
         high = $1.to_f * million
       else
-        puts 'cannot parse over_50m: ' + over_50m
+        # puts 'cannot parse over_50m: ' + over_50m
       end
     end
 

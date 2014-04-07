@@ -33,7 +33,7 @@ class SiteMapIndex
         %Q|</sitemapindex>\n|
 
     File.open("#{RAILS_ROOT}/public/sitemap_index.xml",'w') do |file|
-      puts 'writing: ' + file.path
+      # puts 'writing: ' + file.path
       file.write siteindex.join('')
     end
   end
@@ -71,7 +71,7 @@ class SiteMap
     raise "can only write to file once" unless @site_map
 
     Zlib::GzipWriter.open("#{RAILS_ROOT}/#{@location}") do |file|
-      puts 'writing: ' + @location
+      # puts 'writing: ' + @location
       file.write @site_map
     end
     @site_map = nil
@@ -124,7 +124,7 @@ class DebatesSiteMap < SiteMap
           pages << new_entry(location, debate.download_date)
         end
       rescue Exception => e
-        # puts "debate id #{debate.id}: " + e.message
+        # # puts "debate id #{debate.id}: " + e.message
       end
       pages
     end

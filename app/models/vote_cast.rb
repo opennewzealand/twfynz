@@ -1,4 +1,19 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: vote_casts
+#
+#  id         :integer          not null, primary key
+#  vote_id    :integer          not null
+#  cast       :string(12)       not null
+#  cast_count :integer          not null
+#  vote_label :string(255)      not null
+#  mp_id      :integer
+#  party_id   :integer
+#  present    :boolean
+#  teller     :boolean
+#
+
 class VoteCast < ActiveRecord::Base
 
   belongs_to :vote
@@ -16,15 +31,15 @@ class VoteCast < ActiveRecord::Base
     @date ? @date : vote.debate.date
   end
 
+  def mp_name= name
+    @mp_name = name
+  end
+
+  def party_name= name
+    @party_name = name
+  end
+
   protected
-
-    def mp_name= name
-      @mp_name = name
-    end
-
-    def party_name= name
-      @party_name = name
-    end
 
     def populate_party
       if @party_name

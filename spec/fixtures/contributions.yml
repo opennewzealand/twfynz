@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: contributions
+#
+#  id           :integer          not null, primary key
+#  spoken_in_id :integer          not null
+#  spoken_by_id :integer
+#  type         :string(255)      not null
+#  speaker      :string(255)
+#  on_behalf_of :string(255)
+#  time         :time
+#  page         :integer
+#  vote_id      :integer
+#  text         :text             not null
+#  date         :date
+#  date_int     :integer
+#
+
 communications_question:
   text: "<p>I have received a large number of positive reports. A very recent one was from the OECD. It says: \xE2\x80\x9CThe decision by the New Zealand Government to unbundle the local loop opens the door to more competition in the New Zealand broadband market.\xE2\x80\x9D Another quote, from the president of InternetNZ, says: \xE2\x80\x9CThese decisions open the playing field for industry competitors to show their commitment to New Zealand consumers by investing in new infrastructure and services.\xE2\x80\x9D</p>"
   time:

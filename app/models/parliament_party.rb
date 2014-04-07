@@ -1,4 +1,21 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: parliament_parties
+#
+#  id                                   :integer          not null, primary key
+#  parliament_id                        :integer
+#  party_id                             :integer
+#  parliament_description               :text
+#  in_parliament_text                   :text
+#  parliament_agreements_text           :text
+#  agreements_file                      :string(255)
+#  parliament_url                       :string(255)
+#  wikipedia_url                        :string(255)
+#  party_votes_count                    :integer
+#  bill_final_reading_party_votes_count :integer
+#
+
 class ParliamentParty < ActiveRecord::Base
   belongs_to :party
   belongs_to :parliament

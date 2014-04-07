@@ -14,7 +14,7 @@ class SubmissionsDownloader
 
   def self.open_page page_number
     url = "http://www.parliament.nz/en-NZ/PB/SC/Documents/Evidence/Default.htm?p=#{page_number.to_s}"
-    puts 'downloading '+url
+    # puts 'downloading '+url
     Hpricot open(url)
   end
 
@@ -94,7 +94,7 @@ class SubmissionsDownloader
   end
 
   def self.create_submissions committees, doc
-    puts 'found ' + committees.size.to_s + ' submissions'
+    # puts 'found ' + committees.size.to_s + ' submissions'
     dates = find_dates doc
     detailed_url = find_view_all_url doc
     details_doc = load_details_doc detailed_url
@@ -106,7 +106,7 @@ class SubmissionsDownloader
         begin
           document_url = find_document_2 title
         rescue Exception => e
-          puts detailed_url + ' ' + title.inner_text
+          # puts detailed_url + ' ' + title.inner_text
           raise e
         end
       end
@@ -127,7 +127,7 @@ class SubmissionsDownloader
             :is_from_organisation => false,
             :submitter_type => nil,
             :submitter_id => nil
-          puts 'saving ' + submitter + ' - ' + business_item
+          # puts 'saving ' + submitter + ' - ' + business_item
           submission.save!
         end
       end

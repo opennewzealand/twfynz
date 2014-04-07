@@ -1,3 +1,5 @@
+# TODO: Remove all references to these methods
+
 
 # e.g. assert_model_has_many :questions
 def assert_model_has_one(association_name)
@@ -42,5 +44,5 @@ def assert_association_exists model, association_macro, association_name, model_
     end
   end
 
-  assert model_with_foreign_key.column_names.include?(association.primary_key_name), "Could not find foreign key '#{association.primary_key_name}' for the association '#{association_name}' in the table for model '#{model_with_foreign_key}'."
+  assert model_with_foreign_key.column_names.include?(association.foreign_key), "Could not find foreign key '#{association.foreign_key}' for the association '#{association_name}' in the table for model '#{model_with_foreign_key}'."
 end

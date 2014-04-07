@@ -1,4 +1,13 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: committee_chairs
+#
+#  id        :integer          not null, primary key
+#  chairs_id :integer          not null
+#  role      :string(82)       not null
+#
+
 class CommitteeChair < ActiveRecord::Base
 
   belongs_to :committee, :foreign_key => 'chairs_id'

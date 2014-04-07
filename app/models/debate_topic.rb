@@ -1,4 +1,14 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: debate_topics
+#
+#  id         :integer          not null, primary key
+#  debate_id  :integer          not null
+#  topic_type :string(15)
+#  topic_id   :integer          not null
+#
+
 class DebateTopic < ActiveRecord::Base
 
   belongs_to :topic, :polymorphic => true

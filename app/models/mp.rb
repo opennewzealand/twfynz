@@ -1,4 +1,29 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: mps
+#
+#  id              :integer          not null, primary key
+#  elected         :string(4)        not null
+#  former          :boolean          not null
+#  id_name         :string(46)       not null
+#  last            :string(20)       not null
+#  first           :string(25)       not null
+#  title           :string(13)
+#  electorate      :string(25)
+#  member_of_id    :integer
+#  img             :string(25)       not null
+#  alt             :string(20)
+#  honour          :string(3)
+#  wikipedia_url   :string(255)
+#  parliament_url  :string(255)
+#  own_website_url :string(255)
+#  party_bio_url   :string(255)
+#  image           :string(255)
+#  alt_image       :string(255)
+#  alt_last        :string(255)
+#
+
 require 'expire_cache'
 
 class Mp < ActiveRecord::Base
@@ -28,6 +53,7 @@ class Mp < ActiveRecord::Base
   class << self
 
     def all_mps
+      # FIXME: Avoid SQL
       # @all_mps ||= Mp.find_by_sql('select id,first,alt,last from mps')
       Mp.find_by_sql('select id,first,alt,last from mps')
     end

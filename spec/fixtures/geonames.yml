@@ -1,3 +1,32 @@
+# == Schema Information
+#
+# Table name: geonames
+#
+#  id                 :integer          not null, primary key
+#  geonameid          :integer
+#  name               :string(255)
+#  first_word_in_name :string(255)
+#  asciiname          :string(255)
+#  alternatenames     :text
+#  latitude           :decimal(10, 7)
+#  longitude          :decimal(10, 7)
+#  feature_class      :string(255)
+#  feature_code       :string(255)
+#  country_code       :string(255)
+#  cc2                :string(255)
+#  admin1_code        :string(255)
+#  admin2_code        :string(255)
+#  admin3_code        :string(255)
+#  admin4_code        :string(255)
+#  population         :integer
+#  elevation          :integer
+#  gtopo30            :integer
+#  timezone           :string(255)
+#  modification_date  :date
+#  slug               :string(255)
+#  count_of_mentions  :integer
+#
+
 auckland:
   slug: auckland
   elevation:

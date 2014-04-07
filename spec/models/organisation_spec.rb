@@ -1,4 +1,20 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+# == Schema Information
+#
+# Table name: organisations
+#
+#  id                :integer          not null, primary key
+#  name              :string(255)
+#  url               :string(255)
+#  slug              :string(255)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  wikipedia_url     :string(255)
+#  count_of_mentions :integer
+#  alternate_names   :string(255)
+#  sourcewatch_url   :string(255)
+#
+
+require 'spec_helper'
 
 describe Organisation, 'when finding organisation from text' do
   assert_model_has_many :donations
@@ -6,7 +22,7 @@ describe Organisation, 'when finding organisation from text' do
   describe 'when finding organisation from text' do
 
     def check_found text, name, options={:found => :on_first_try}
-      organisation = mock(Organisation)
+      organisation = double(Organisation)
       Organisation.should_receive(:find_by_name).with(text).and_return(nil) if (options[:found] == :on_second_try || options[:found] == :on_third_try)
       Organisation.should_receive(:find_by_name).with(options[:second_try]) if options[:found] == :on_third_try
       Organisation.should_receive(:find_by_name).with(name).and_return organisation
@@ -255,15 +271,15 @@ describe Organisation, 'when finding organisation from text' do
 
       mention1 = contributions(:bill_continue_speech)
       mention2 = contributions(:bill_speech)
-      mention1.stub!(:id).and_return(1)
-      mention2.stub!(:id).and_return(2)
+      mention1.stub(:id).and_return(1)
+      mention2.stub(:id).and_return(2)
       Contribution.should_receive(:search_name).twice.with('InternetNZ').and_return([mention1])
       Contribution.should_receive(:search_name).twice.with('Internet Society of New Zealand').and_return([mention2])
 
       internetnz.find_mentions.should == [[[mention1, mention2]]]
 
-      mention1.stub!(:id).and_return(2)
-      mention2.stub!(:id).and_return(1)
+      mention1.stub(:id).and_return(2)
+      mention2.stub(:id).and_return(1)
 
       internetnz.find_mentions.should == [[[mention2, mention1]]]
     end
@@ -272,20 +288,20 @@ describe Organisation, 'when finding organisation from text' do
       internetnz = organisations(:internetnz)
 
       first_reading = mock_model(BillDebate)
-      first_reading.stub!(:about).and_return(bills(:a_bill))
-      first_reading.stub!(:date).and_return(debates(:bill_reading).date + 1)
+      first_reading.stub(:about).and_return(bills(:a_bill))
+      first_reading.stub(:date).and_return(debates(:bill_reading).date + 1)
 
       mention1 = contributions(:bill_continue_speech)
       mention2 = contributions(:bill_speech)
 
-      mention1.stub!(:debate).and_return(first_reading)
+      mention1.stub(:debate).and_return(first_reading)
 
-      Contribution.should_receive(:search_name).any_number_of_times.with('InternetNZ').and_return([mention1])
-      Contribution.should_receive(:search_name).any_number_of_times.with('Internet Society of New Zealand').and_return([mention2])
+      Contribution.should_receive(:search_name).with('InternetNZ').and_return([mention1])
+      Contribution.should_receive(:search_name).with('Internet Society of New Zealand').and_return([mention2])
 
       internetnz.find_mentions.should == [[[mention1],[mention2]]]
 
-      first_reading.stub!(:date).and_return(debates(:bill_reading).date - 1)
+      first_reading.stub(:date).and_return(debates(:bill_reading).date - 1)
 
       internetnz.find_mentions.should == [[[mention2],[mention1]]]
       internetnz.live_count_of_debates_mentioned_in.should == 2
@@ -298,8 +314,8 @@ describe Organisation, 'when finding organisation from text' do
       mention3   = contributions(:bill_speech)
       mention4   = contributions(:speech)
 
-      Contribution.should_receive(:search_name).any_number_of_times.with('InternetNZ').and_return([mention1,mention3])
-      Contribution.should_receive(:search_name).any_number_of_times.with('Internet Society of New Zealand').and_return([mention2,mention4])
+      Contribution.should_receive(:search_name).with('InternetNZ').and_return([mention1,mention3])
+      Contribution.should_receive(:search_name).with('Internet Society of New Zealand').and_return([mention2,mention4])
 
       date = Date.new(2006,11,11)
       mention1.debate.date = date + 2

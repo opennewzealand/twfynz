@@ -1,4 +1,15 @@
 # encoding: UTF-8
+# == Schema Information
+#
+# Table name: sitting_days
+#
+#  id               :integer          not null, primary key
+#  date             :date
+#  has_oral_answers :boolean
+#  has_advance      :boolean
+#  has_final        :boolean
+#
+
 require 'date'
 
 class SittingDay < ActiveRecord::Base

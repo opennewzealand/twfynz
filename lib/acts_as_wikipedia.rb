@@ -24,10 +24,10 @@ module Acts
           url = "http://www.google.com/search?&q=%22#{encoded_name}%22%20site%3Aen.wikipedia.org"
           url += "%20#{additional_search_term}" if additional_search_term
 
-          puts url
+          # puts url
           doc = Hpricot open(url)
           results = (doc / 'h3.r/a')
-          puts results
+          # puts results
           if results.size > 0
             self.wikipedia_url = results.first['href']
           else
